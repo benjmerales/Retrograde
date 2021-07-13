@@ -4,7 +4,8 @@ import javax.sound.sampled.Clip;
 import javax.swing.*;
 
 public class Sounds {
-        String click = "resources/sounds/click1.wav";
+        String click = "resources/sounds/click.wav";
+        String hover = "resources/sounds/hover.wav";
         String bgm = "resources/sounds/bgm.wav";
 
         String win_sfc = "resources/sounds/correct.wav";
@@ -64,5 +65,26 @@ public class Sounds {
                 }
         }).start();
     }
+        public void hover_() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Clip clip = AudioSystem.getClip();
+                    AudioInputStream inputStream = AudioSystem.getAudioInputStream(Sounds.class.getResource(hover));
+                    clip.open(inputStream);
+                    clip.start();
 
+                    while(clip.isOpen()) {
+                        try { Thread.sleep(2000); } catch(InterruptedException ie) {}
+                        if(!clip.isActive()) break;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+    }
 }

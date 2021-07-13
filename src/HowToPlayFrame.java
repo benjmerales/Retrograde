@@ -6,7 +6,7 @@ public class HowToPlayFrame extends JFrame{
     private JButton backButton;
     private JPanel mainPanel;
     public HowToPlayFrame(){
-        Utility.__initialization__(this, mainPanel);
+        Utility.__initialization__(this, mainPanel, ThemeValues.SHARK, ThemeValues.CHROME_WHITE);
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
