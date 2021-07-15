@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -12,47 +10,36 @@ public class MenuFrame extends JFrame{
     private JButton highscoreButton;
     private JButton exitButton;
     private JPanel mainPanel;
-    private JButton button1;
+    private JButton pongButton;
     private JLabel titleLabel;
 
-    public JButton buttons[];
+    public JButton[] buttons;
     public MenuFrame(){
-        buttons = new JButton[] {startButton, continueButton, howToPlayButton, highscoreButton, exitButton};
+        buttons = new JButton[] {startButton, continueButton, howToPlayButton, highscoreButton, pongButton, exitButton};
 
-        Utility.__initialization__(this, mainPanel, ThemeValues.MALACHITE, ThemeValues.MOUNTAIN_MEADOW);
+        Utility.__initialization__(this, mainPanel, ColorValues.MOUNTAIN_MEADOW, ColorValues.CYAN);
 
         titleLabel.setForeground(Color.YELLOW);
 
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int process = JOptionPane.showConfirmDialog(null, "Are you sure want to quit?");
-                if (process == JOptionPane.YES_OPTION) System.exit(0);
-            }
+        exitButton.addActionListener(e -> {
+            int process = JOptionPane.showConfirmDialog(null, "Are you sure want to quit?");
+            if (process == JOptionPane.YES_OPTION) System.exit(0);
         });
-        howToPlayButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                HowToPlayFrame HF = new HowToPlayFrame();
-                HF.setVisible(true);
-            }
+        howToPlayButton.addActionListener(e -> {
+            dispose();
+            HowToPlayFrame HF = new HowToPlayFrame();
+            HF.setVisible(true);
         });
-        highscoreButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                HighScoreFrame HF = new HighScoreFrame();
-                HF.setVisible(true);
-            }
+        highscoreButton.addActionListener(e -> {
+            dispose();
+            HighScoreFrame HF = new HighScoreFrame();
+            HF.setVisible(true);
         });
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                StoryFrame SF = new StoryFrame();
-                SF.setVisible(true);
-            }
+        startButton.addActionListener(e -> {
+            dispose();
+            new DataReader().reset();
+            StoryFrame SF = new StoryFrame();
+            SF.setVisible(true);
         });
 
         for(JButton button: buttons) {
@@ -60,19 +47,20 @@ public class MenuFrame extends JFrame{
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     super.mouseEntered(e);
-                    button.setText(">" + button.getText());
-
+                    button.setText("> " + button.getText());
+                    new Sounds().hover_();
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
                     super.mouseExited(e);
-                    button.setText("" + button.getText().substring(1));
+                    button.setText("" + button.getText().substring(2));
                 }
             });
         }
-
-        highscoreButton.addMouseListener(new MouseAdapter() {
+        continueButton.addActionListener(e -> {
+            CategoryFrame CF = new CategoryFrame();
+            CF.setVisible(true);
         });
     }
 

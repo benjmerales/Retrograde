@@ -4,29 +4,36 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class QuestionFrame extends JFrame{
+    //<editor-fold desc="- - Swing Components - -">
     private JPanel mainPanel;
     private JButton optionAButton;
     private JButton optionBButton;
     private JButton optionCButton;
     private JButton optionDButton;
-    private JButton browseButton;
-    private JButton jailbreakButton;
-    private JButton showButton;
+    private JButton powerCButton;
+    private JButton powerBButton;
+    private JButton powerAButton;
     private JLabel questionLabel;
+    private JLabel progressBar;
     private QuestionObject QO;
+    //</editor-fold>
 
     public JButton[] options;
+    public DataReader DR;
+
     public QuestionFrame(QuestionObject question){
         this.QO = question;
-
-        Utility.__initialization__(this, mainPanel, ThemeValues.ROYAL_BLUE, ThemeValues.BLUE_CHILL);
+        this.DR = new DataReader();
+        Utility.__initialization__(this, mainPanel, ColorValues.ROYAL_BLUE, ColorValues.BLUE_CHILL);
         reinitialization();
-
         if(question == null) {
             question = new QuestionObject(new String[]{"0", "Zebra", "Null Null A Null Null?", "Error", "000xc:", "Exception", "Throw", "A", "false"});
             this.QO = question;
         }
+
         initializeQuestion();
+        computeForProgress();
+        recheckPowerButtons();
 
         options = new JButton[] {optionAButton, optionBButton, optionCButton, optionDButton};
         optionAButton.addActionListener(e -> { if(QO.correct == 'A') tally(true); else tally(false); });
@@ -40,18 +47,49 @@ public class QuestionFrame extends JFrame{
                 public void mouseEntered(MouseEvent e) {
                     super.mouseEntered(e);
                     new Sounds().hover_();
-                    option.setBackground(ThemeValues.MOUNTAIN_MEADOW);
-                    option.setForeground(ThemeValues.CHROME_WHITE);
+                    option.setBackground(ColorValues.MOUNTAIN_MEADOW);
+                    option.setForeground(ColorValues.CHROME_WHITE);
                 }
 
                 @Override
                 public void mouseExited(MouseEvent e) {
                     super.mouseExited(e);
                     option.setBackground(null);
-                    option.setForeground(ThemeValues.BLUE_CHILL);
+                    option.setForeground(ColorValues.BLUE_CHILL);
                 }
             });
         }
+
+        powerAButton.addActionListener(e -> {
+            CaptchaPowerFrame CPF = new CaptchaPowerFrame(QO.correct);
+            CPF.setVisible(true);
+            DR.changePowersStatus(0);
+            recheckPowerButtons();
+        });
+        powerBButton.addActionListener(e -> {
+            BinaryPowerFrame BPF = new BinaryPowerFrame(QO.correct);
+            BPF.setVisible(true);
+            DR.changePowersStatus(1);
+            recheckPowerButtons();
+        });
+        powerCButton.addActionListener(e -> {
+            DR.changePowersStatus(2);
+            recheckPowerButtons();
+        });
+    }
+    public void recheckPowerButtons(){
+        if(!DR.checkPowerIndex(0)) powerAButton.setEnabled(false);
+        if(!DR.checkPowerIndex(1)) powerBButton.setEnabled(false);
+        if(!DR.checkPowerIndex(2)) powerCButton.setEnabled(false);
+    }
+    public void computeForProgress(){
+        int[] questions = DR.getQuestions();
+        int cnt = 0;
+        for (int i: questions){
+            if(i == -1) cnt++;
+        }
+        String percent = String.format("%.02f", (cnt/13f)*100);
+        progressBar.setText("Progress: " + percent + "%");
     }
     public void tally(boolean answer){
         DataReader DR = new DataReader();

@@ -53,7 +53,8 @@ interface Data {
     static int[] strip(String[] str){
         int[] array = new int[str.length];
         for (int i = 0; i < str.length; i++) {
-            array[i] = Integer.parseInt(str[i].replaceAll("[^0-9]", ""));
+//            array[i] = Integer.parseInt(str[i].replaceAll("[^0-9]", ""));
+            array[i] = Integer.parseInt(str[i]);
         }
         return array;
     }
@@ -156,7 +157,7 @@ public class DataReader {
         Random R = new Random();
         String questions = "";
         int max = Data.strip(Objects.requireNonNull(Data.get(Data.TOTAL_QUESTIONS_dl)));
-        for (int i = 0; i < max; i++) {
+        for (int i = 0; i < 13; i++) {
             questions += R.nextInt(max) + " ";
         }
         Data.replace(Data.QUESTIONS_dl, questions);
@@ -165,10 +166,10 @@ public class DataReader {
         try {
             FileWriter dataFileNew = new FileWriter(Data.DATA_PATH);
             dataFileNew.write("Retrograde Data Game File\n");
-            dataFileNew.write("Total Questions: 145\n");
+            dataFileNew.write("Total Questions: 40\n");
             dataFileNew.write("0\n");
             dataFileNew.write("\n");
-            dataFileNew.write("0 0 0\n");
+            dataFileNew.write("1 1 1\n");
             dataFileNew.write("OFF\n");
             dataFileNew.close();
         }catch (IOException e){

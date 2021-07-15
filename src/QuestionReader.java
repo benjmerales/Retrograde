@@ -55,9 +55,10 @@ public class QuestionReader {
         }
     }
     public QuestionObject pickQuestion(int index){
+
         QuestionObject question = QO_Lists.get(index);
         currentQ = question;
-        System.out.println("Picked Question ID0" + currentQ.id);
+        System.out.println("Picked Question ID0" + currentQ.id + " with index " + index);
         return question;
     }
 }

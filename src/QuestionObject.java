@@ -29,6 +29,7 @@ public class QuestionObject {
         temp += "\tCorrect Answer: " + correct + "\n";
 //        temp += "\tThis question is a " + questionType + " type of question.";
         temp += "\tThis question has a code snippet: " + hasCodeSnippet;
+        temp += "\n";
         return temp;
     }
 }
