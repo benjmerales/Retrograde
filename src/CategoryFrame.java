@@ -21,10 +21,12 @@ public class CategoryFrame extends JFrame{
     public JButton[] allButtons;
     public JButton[] majorButtons;
     public JButton[] subButtons;
-    public boolean activeMajorButtons[];
+    public boolean[] activeMajorButtons;
 
     public int major_index;
     public int minor_index;
+    int[] questions;
+    DataReader DR;
     public CategoryFrame(){
         allButtons = new JButton[] { motherboardButton, CPUButton, chipsetButton, networkButton, operatingSystemButton,
                 subCategory1, subCategory2, subCategory3, subCategory4, subCategory5, subCategory6 };
@@ -34,85 +36,122 @@ public class CategoryFrame extends JFrame{
         activeMajorButtons = new boolean[5];
         major_index = minor_index = -1;
 
-        Utility.__initialization__(this, mainPanel, ThemeValues.ROYAL_BLUE, Color.WHITE);
+        DR = new DataReader();
+        questions = DR.getQuestions();
+        Utility.__initialization__(this, mainPanel, ColorValues.ROYAL_BLUE, Color.WHITE);
         __initialization__();
         this.setSize(500, 500);
         this.setLocationRelativeTo(null);
+
         motherboardButton.addActionListener(e -> {
             resetColorMajorButtons();
             major_index = 0;
             motherboardButton.setBackground(Color.WHITE);
-            motherboardButton.setForeground(ThemeValues.ROYAL_BLUE);
-            subCategory1.setText("System Clock");
-            subCategory2.setText("Expansion Slots");
-            subCategory3.setText("Ports");
-            subCategory4.setText("BIOS");
-            subCategory5.setText("CMOS");
-            subCategory6.setText("Bus Ports");
+            motherboardButton.setForeground(ColorValues.ROYAL_BLUE);
+            setSubCategories(major_index);
+            checkAvailableCategories(0,6);
         });
         CPUButton.addActionListener(e -> {
             resetColorMajorButtons();
             major_index = 1;
             CPUButton.setBackground(Color.WHITE);
-            CPUButton.setForeground(ThemeValues.ROYAL_BLUE);
-            subCategory1.setText("Control Unit");
-            subCategory2.setText("Arithmetic and Logic Unit");
-            subCategory3.setText("Registers");
-            subCategory4.setText("");
-            subCategory5.setText("");
-            subCategory6.setText("");
+            CPUButton.setForeground(ColorValues.ROYAL_BLUE);
+            setSubCategories(major_index);
+            checkAvailableCategories(6, 3);
         });
         chipsetButton.addActionListener(e -> {
             resetColorMajorButtons();
             major_index = 2;
             chipsetButton.setBackground(Color.WHITE);
-            chipsetButton.setForeground(ThemeValues.ROYAL_BLUE);
-            subCategory1.setText("Northbridge");
-            subCategory2.setText("Southbridge");
-            subCategory3.setText("");
-            subCategory4.setText("");
-            subCategory5.setText("");
-            subCategory6.setText("");
+            chipsetButton.setForeground(ColorValues.ROYAL_BLUE);
+            setSubCategories(major_index);
+            checkAvailableCategories(9, 2);
         });
         networkButton.addActionListener(e -> {
             resetColorMajorButtons();
             major_index = 3;
             networkButton.setBackground(Color.WHITE);
-            networkButton.setForeground(ThemeValues.ROYAL_BLUE);
-            subCategory1.setText("Hypertext Transfer Protocol");
-            subCategory2.setText("");
-            subCategory3.setText("");
-            subCategory4.setText("");
-            subCategory5.setText("");
-            subCategory6.setText("");
+            networkButton.setForeground(ColorValues.ROYAL_BLUE);
+            setSubCategories(major_index);
+            checkAvailableCategories(11, 1);
         });
         operatingSystemButton.addActionListener(e -> {
             resetColorMajorButtons();
             major_index = 4;
             operatingSystemButton.setBackground(Color.WHITE);
-            operatingSystemButton.setForeground(ThemeValues.ROYAL_BLUE);
-            subCategory1.setText("Ubuntu");
+            operatingSystemButton.setForeground(ColorValues.ROYAL_BLUE);
+            setSubCategories(major_index);
+            checkAvailableCategories(12, 1);
+        });
+
+
+        subCategory1.addActionListener(e -> { minor_index = 0; prepareQuestionFrame(); });
+        subCategory2.addActionListener(e -> { minor_index = 1; prepareQuestionFrame(); });
+        subCategory3.addActionListener(e -> { minor_index = 2; prepareQuestionFrame(); });
+        subCategory4.addActionListener(e -> { minor_index = 3; prepareQuestionFrame(); });
+        subCategory5.addActionListener(e -> { minor_index = 4; prepareQuestionFrame(); });
+        subCategory6.addActionListener(e -> { minor_index = 5; prepareQuestionFrame(); });
+
+
+    }
+    public void setSubCategories(int index){
+        if(index == 0){
+            subCategory1.setText("System Clock"); // 0
+            subCategory2.setText("Expansion Slots");
+            subCategory3.setText("Ports");
+            subCategory4.setText("BIOS");
+            subCategory5.setText("CMOS");
+            subCategory6.setText("Bus Ports");
+        }
+        else if(index == 1){
+            subCategory1.setText("Control Unit"); // 6
+            subCategory2.setText("Arithmetic and Logic Unit");
+            subCategory3.setText("Registers");
+            subCategory4.setText("");
+            subCategory5.setText("");
+            subCategory6.setText("");
+        }
+        else if(index == 2){
+            subCategory1.setText("Northbridge"); // 9
+            subCategory2.setText("Southbridge");
+            subCategory3.setText("");
+            subCategory4.setText("");
+            subCategory5.setText("");
+            subCategory6.setText("");
+        }
+        else if(index == 3){
+            subCategory1.setText("Hypertext Transfer Protocol"); // 11
             subCategory2.setText("");
             subCategory3.setText("");
             subCategory4.setText("");
             subCategory5.setText("");
             subCategory6.setText("");
-        });
-
-
-        subCategory1.addActionListener(e -> { minor_index = 0; prepareFrame(); });
-        subCategory2.addActionListener(e -> { minor_index = 1; prepareFrame(); });
-        subCategory3.addActionListener(e -> { minor_index = 2; prepareFrame(); });
-        subCategory4.addActionListener(e -> { minor_index = 3; prepareFrame(); });
-        subCategory5.addActionListener(e -> { minor_index = 4; prepareFrame(); });
-        subCategory6.addActionListener(e -> { minor_index = 5; prepareFrame(); });
-
-
+        }
+        else if(index == 4){
+            subCategory1.setText("Ubuntu"); // 12
+            subCategory2.setText("");
+            subCategory3.setText("");
+            subCategory4.setText("");
+            subCategory5.setText("");
+            subCategory6.setText("");
+        }
     }
-    public void prepareFrame(){
+    public void checkAvailableCategories(int startingIndex, int size){
+        for (int i = 0; i < size; i++) {
+            if(questions[startingIndex + i] == -2) {
+                subButtons[i].setEnabled(false);
+                subButtons[i].setForeground(Color.RED);
+            }
+            if(questions[startingIndex + i] == -1) {
+                subButtons[i].setForeground(Color.GREEN);
+            }
+        }
+    }
+    public void prepareQuestionFrame(){
         QuestionReader QR = new QuestionReader(0);
-        DataReader DR = new DataReader();
+
         int index = DR.getQuestionID(major_index + minor_index);
+        Data.replace(Data.PROGRESS_dl, index + "");
         QuestionObject QO = QR.pickQuestion(index);
         dispose();
         QuestionFrame QF = new QuestionFrame(QO);
@@ -134,7 +173,7 @@ public class CategoryFrame extends JFrame{
                     super.mouseEntered(e);
                     new Sounds().hover_();
                     button.setBackground(Color.WHITE);
-                    button.setForeground(ThemeValues.CERULEAN_BLUE);
+                    button.setForeground(ColorValues.CERULEAN_BLUE);
                 }
 
                 @Override

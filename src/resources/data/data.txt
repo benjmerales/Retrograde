@@ -1,6 +1,6 @@
-Retrograde Data Game File DON'T EDIT
-145
-0
--2 2 3 4 5 6 7 8 9 10 11 12 13 
-0 0 0
+Retrograde Data Game File
+Total Questions: 40
+7
+7 -2 7 30 -2 24 33 -1 14 12 10 1 6
+1 1 1 
 OFF

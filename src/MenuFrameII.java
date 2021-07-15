@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 public class MenuFrameII {
 
@@ -40,7 +38,7 @@ public class MenuFrameII {
         Dimension size;
 
         size = backgroundLabel.getPreferredSize();
-        backgroundLabel.setBounds(250 + insets.left, 125 + insets.top, size.width, size.height);
+        backgroundLabel.setBounds(250 + insets.left, 125 + insets.top, 100, 100);
 
         size = startButton.getPreferredSize();
         startButton.setBounds(675 + insets.left, 354 + insets.top, size.width,size.height);
@@ -81,7 +79,9 @@ public class MenuFrameII {
                 }
             }
         });*/
-//        Utility.__initialization__(frame, mainPanel, ThemeValues.CHROME_WHITE, ThemeValues.MOUNTAIN_MEADOW);
+        Utility.__initialization__(frame, mainPanel, ColorValues.CHROME_WHITE, ColorValues.MOUNTAIN_MEADOW);
+        startButton.setBackground(null);
+        startButton.setForeground(Color.BLACK);
         frame.setMinimumSize(new Dimension(500,500));
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);

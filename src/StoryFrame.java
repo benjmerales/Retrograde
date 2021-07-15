@@ -12,7 +12,7 @@ public class StoryFrame extends JFrame {
     public StoryFrame(){
 
         test.setText("Lorem ipsum sit dolor iscet ");
-        Utility.__initialization__(this, mainPanel, ThemeValues.SHARK, ThemeValues.CERULEAN_BLUE);
+        Utility.__initialization__(this, mainPanel, ColorValues.SHARK, ColorValues.CERULEAN_BLUE);
         mainPanel.addComponentListener(new ComponentAdapter() { } );
         mainPanel.addMouseListener(new MouseAdapter() {
             @Override

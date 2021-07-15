@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 public class SplashFrame extends JFrame implements Utility{
     private JPanel mainPanel;
     public SplashFrame(){
-        Utility.__initialization__(this, mainPanel, ThemeValues.SHARK, ThemeValues.MALACHITE);
+        Utility.__initialization__(this, mainPanel, ColorValues.SHARK, ColorValues.MALACHITE);
         mainPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -15,7 +15,6 @@ public class SplashFrame extends JFrame implements Utility{
                 MF.setVisible(true);
             }
         });
-
     }
 
     public static void main(String[] args) {
