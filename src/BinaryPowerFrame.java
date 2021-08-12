@@ -1,6 +1,9 @@
 import javax.swing.*;
 import java.util.Random;
 
+/***
+ * The 1st power up of the game. The usual decimal to binary puzzle game.
+ */
 public class BinaryPowerFrame extends JFrame{
     private JPanel mainPanel;
     private JButton submitButton;
@@ -19,6 +22,9 @@ public class BinaryPowerFrame extends JFrame{
     JButton[] binaryNumbers;
     public BinaryPowerFrame(char correct_answer){
         Utility.__initialization__(this, mainPanel, ColorValues.SHARK, ColorValues.CHROME_WHITE);
+        this.setSize(800,200);
+        this.setExtendedState(0);
+        this.setLocationRelativeTo(null);
         R = new Random();
         binaryNumbers = new JButton[] {_64Button, _32Button, _16Button,_8Button, _4Button,_2Button,_1Button};
         decimal = R.nextInt(128);
@@ -33,12 +39,12 @@ public class BinaryPowerFrame extends JFrame{
 
         submitButton.addActionListener(e -> {
             calculate();
-            JOptionPane.showMessageDialog(null, total);
             if(total == decimal){
                 JOptionPane.showMessageDialog(null, "The Answer is " + correct_answer);
             }else{
                 JOptionPane.showMessageDialog(null, "Incorrect!!");
             }
+            new DataReader().changePowersStatus(1);
             dispose();
         });
     }

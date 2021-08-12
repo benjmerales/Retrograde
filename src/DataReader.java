@@ -18,17 +18,18 @@ import java.util.Scanner;
  */
 interface Data {
     //DataReader.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "resources/data/
-    String DATA_PATH = "src/resources/data/data.txt"; // TODO: Change src folder
+    String PATH = "src/resources/";
+    String DATA = PATH + "data/data.txt";
     int DESCRIPTION_dl = 0;
     int TOTAL_QUESTIONS_dl = 1;
-    int PROGRESS_dl = 2;
+    int CURRENT_INDEX_dl = 2;
     int QUESTIONS_dl = 3;
     int POWERS_dl = 4;
     int FULLSCREEN_dl = 5;
 
     static String get(int index){
         try{
-            File dataFile = new File(DATA_PATH);
+            File dataFile = new File(DATA);
             Scanner S = new Scanner(dataFile);
             int counter = 0;
             while(S.hasNextLine()){
@@ -52,6 +53,7 @@ interface Data {
     }
     static int[] strip(String[] str){
         int[] array = new int[str.length];
+
         for (int i = 0; i < str.length; i++) {
 //            array[i] = Integer.parseInt(str[i].replaceAll("[^0-9]", ""));
             array[i] = Integer.parseInt(str[i]);
@@ -60,7 +62,7 @@ interface Data {
     }
     static void replace(int index, String str) {
         try{
-            File dataFile = new File(DATA_PATH);
+            File dataFile = new File(DATA);
             Scanner S = new Scanner(dataFile);
             ArrayList<String> allLines = new ArrayList<>();
             int counter = 0;
@@ -74,7 +76,7 @@ interface Data {
                 counter++;
             }
             S.close();
-            FileWriter dataFileNew = new FileWriter(DATA_PATH);
+            FileWriter dataFileNew = new FileWriter(DATA);
             for(String i: allLines){
                 dataFileNew.write(i + "\n");
             }
@@ -93,7 +95,7 @@ interface Data {
 public class DataReader {
     String description;
     int sizeQuestions;
-    int progress;
+    int currentIndex;
     int questions[];
     int powers[];
     boolean fullScreen;
@@ -101,8 +103,13 @@ public class DataReader {
     public DataReader(){
         this.description = Data.get(0);
         this.sizeQuestions = Data.strip(Objects.requireNonNull(Data.get(1)));
-        this.progress = Data.strip(Data.get(Data.PROGRESS_dl));
-        this.questions = Data.strip(Data.get(Data.QUESTIONS_dl).split(" "));
+        this.currentIndex = Data.strip(Data.get(Data.CURRENT_INDEX_dl));
+        if(Data.get(Data.QUESTIONS_dl).equals("")){
+            System.out.println("ERROR on DATAREADER: getting question line is null, initializing new questions");
+            this.questions = new int[13];
+        }else{
+            this.questions = Data.strip(Data.get(Data.QUESTIONS_dl).split(" "));
+        }
         this.powers = Data.strip(Data.get(Data.POWERS_dl).split(" "));
         this.fullScreen = Data.get(Data.FULLSCREEN_dl).contains("ON");
     }
@@ -113,11 +120,6 @@ public class DataReader {
         }else{
             return false;
         }
-    }
-    public int nextLevel(){
-        this.progress++;
-        Data.replace(Data.PROGRESS_dl, this.progress + "");
-        return progress;
     }
     public boolean changeScreenStatus(){
         if(isFullScreen()){
@@ -130,9 +132,9 @@ public class DataReader {
     }
     public boolean changePowersStatus(int index){
         if(checkPowerIndex(index))
-            powers[index] = 1;
-        else
             powers[index] = 0;
+        else
+            powers[index] = 1;
         String temp = "";
         for(int i: powers){
             temp += i + " ";
@@ -148,23 +150,39 @@ public class DataReader {
         }
         Data.replace(Data.QUESTIONS_dl, temp);
     }
-
-
     public int getQuestionID(int index){
         return questions[index];
     }
     public void newQuestions(){
-        Random R = new Random();
-        String questions = "";
+        String question_line = "";
         int max = Data.strip(Objects.requireNonNull(Data.get(Data.TOTAL_QUESTIONS_dl)));
+        Data.replace(Data.QUESTIONS_dl, " ");
+        this.questions = new int[13];
         for (int i = 0; i < 13; i++) {
-            questions += R.nextInt(max) + " ";
+            question_line += getRandomExcept(question_line, max)+ " ";
         }
-        Data.replace(Data.QUESTIONS_dl, questions);
+        System.out.println("Questions gathered for this run: " + question_line);
+        this.questions = Data.strip(question_line.split(" "));
+        Data.replace(Data.QUESTIONS_dl, question_line);
+    }
+    public int getRandomExcept(String questions, int max){
+        Random R = new Random();
+        if(questions.equals("")) return R.nextInt(max);
+        String[] splitted = questions.split(" ");
+        int len = splitted.length;
+        ArrayList foo = new ArrayList();
+        for (int i = 0; i < len; i++) {
+            foo.add(Integer.parseInt(splitted[i]));
+        }
+        int x = 0;
+        do{
+            x = R.nextInt(max);
+        }while(foo.contains(x));
+        return x;
     }
     public void reset(){
         try {
-            FileWriter dataFileNew = new FileWriter(Data.DATA_PATH);
+            FileWriter dataFileNew = new FileWriter(Data.DATA);
             dataFileNew.write("Retrograde Data Game File\n");
             dataFileNew.write("Total Questions: 40\n");
             dataFileNew.write("0\n");
@@ -179,6 +197,9 @@ public class DataReader {
         newQuestions();
     }
 
+    public static void main(String[] args) {
+        new DataReader().changePowersStatus(0);
+    }
     //<editor-fold desc="- - GETTERS - -">
     public String getDescription() {
         return description;
@@ -189,8 +210,8 @@ public class DataReader {
     public boolean isFullScreen() {
         return fullScreen;
     }
-    public int getProgress() {
-        return progress;
+    public int getCurrentIndex() {
+        return currentIndex;
     }
     public int[] getQuestions() {
         return questions;

@@ -1,11 +1,15 @@
 import javax.swing.*;
 
+/***
+ * The 2nd power up of the game. Like an ordinary CAPTCHA, enter the characters as specified
+ */
 public class CaptchaPowerFrame extends JFrame{
     private JButton skipButton;
     private JButton enterButton;
     private JTextField enterField;
     private JLabel captchaLabel;
     private JPanel mainPanel;
+    private JLabel notifLabel;
 
     public String[] captcha_names = new String[] {"captcha0.png", "captcha1.png", "captcha2.png",
                                                   "captcha3.png", "captcha4.png", "captcha5.png"};
@@ -13,15 +17,25 @@ public class CaptchaPowerFrame extends JFrame{
     public int counter;
     public CaptchaPowerFrame(char correct_answer){
         Utility.__initialization__(this, mainPanel, ColorValues.SHARK, ColorValues.CHROME_WHITE);
+        this.setSize(800,200);
+        this.setExtendedState(0);
+        this.setLocationRelativeTo(null);
         enterField.grabFocus();
         counter = 0;
         this.answer = correct_answer;
-        captchaLabel.setIcon(new ImageIcon(Utility.getThisResource("images/captchas/" + captcha_names[counter])));
+        notifLabel.setVisible(false);
+        enterField.setForeground(ColorValues.MOUNTAIN_MEADOW);
+        captchaLabel.setIcon(new ImageIcon(Utility.getThisResource("images/powerups/captchas/" + captcha_names[counter])));
         enterButton.addActionListener(e -> verify());
         skipButton.addActionListener(e -> {
-            counter++;
-            JOptionPane.showMessageDialog(null, "You have " + (6-counter));
-            captchaLabel.setIcon(new ImageIcon(Utility.getThisResource(captcha_names[counter])));
+            if (counter != 5) {
+                counter++;
+                notifLabel.setVisible(true);
+                notifLabel.setText("You have " + (6-counter) + " tries left!");
+                captchaLabel.setIcon(new ImageIcon(Utility.getThisResource("images/powerups/captchas/" + captcha_names[counter])));
+            }else{
+                notifLabel.setText("This is your last try!");
+            }
         });
         enterField.addActionListener(e -> verify());
     }
@@ -42,9 +56,10 @@ public class CaptchaPowerFrame extends JFrame{
                 dispose();
             }
             else{
-                JOptionPane.showMessageDialog(null, "Incorrect! You have " + (6-counter) + " tries left!");
+                notifLabel.setVisible(true);
+                notifLabel.setText("Incorrect! You have " + (6-counter) + " tries left!");
                 enterField.setText("");
-                captchaLabel.setIcon(new ImageIcon(Utility.getThisResource("images/captchas/" + captcha_names[counter])));
+                captchaLabel.setIcon(new ImageIcon(Utility.getThisResource("images/powerups/captchas/" + captcha_names[counter])));
             }
         }
     }

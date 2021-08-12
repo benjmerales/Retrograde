@@ -9,9 +9,44 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
 
+class QuestionObject {
+    public int id;
+    public String category;
+    public String question;
+    public String[] choices;
+    public char correct;
+    //    public String questionType;
+    public boolean hasCodeSnippet;
+    // ID	Category	Question	A	B	C	D	Correct Answer      questionType   isThereACodeSnippet?
+    public QuestionObject(String[] compiled){
+        this.id = Integer.parseInt(compiled[0]);
+        this.category = compiled[1];
+        this.question = compiled[2];
+        this.choices = new String[] {compiled[3], compiled[4], compiled[5], compiled[6]};
+        this.correct = compiled[7].charAt(0);
+        this.hasCodeSnippet = compiled[8].contains("true");
+    }
+
+    public String toString(){
+        String temp = "";
+        temp += "ID: " + id + "\n";
+        temp += "Category: " + category + "\n";
+        temp += "\tQuestion: " + question + "\n";
+        temp += "\t\tA.) : " + choices[0] + "\n";
+        temp += "\t\tB.) : " + choices[1] + "\n";
+        temp += "\t\tC.) : " + choices[2] + "\n";
+        temp += "\t\tD.) : " + choices[3] + "\n";
+        temp += "\tCorrect Answer: " + correct + "\n";
+//        temp += "\tThis question is a " + questionType + " type of question.";
+        temp += "\tThis question has a code snippet: " + hasCodeSnippet;
+        temp += "\n";
+        return temp;
+    }
+}
+
 public class QuestionReader {
     List<QuestionObject> QO_Lists = new ArrayList<>();      // ALL Questions
-    String PATHNAME = "src/resources/data/questions.xlsx";  // TODO: change src folder
+    String PATHNAME = Data.PATH + "data/questions.xlsx";
     QuestionObject currentQ = null;                         // Placeholder for QuestionObject
     DataReader DR;
 
@@ -46,6 +81,7 @@ public class QuestionReader {
                     compiled[i] = line.get(i);
                 }
                 if(compiled.length != 0) {
+                    if(compiled.length < 8) System.out.println("WARNING... Q_ID" + compiled[0] + " LACKS CELLS" );
                     QuestionObject newQO = new QuestionObject(compiled);
                     QO_Lists.add(newQO);
                 }
@@ -55,10 +91,15 @@ public class QuestionReader {
         }
     }
     public QuestionObject pickQuestion(int index){
-
         QuestionObject question = QO_Lists.get(index);
         currentQ = question;
-        System.out.println("Picked Question ID0" + currentQ.id + " with index " + index);
         return question;
+    }
+
+    public static void main(String[] args) {
+        QuestionReader QR = new QuestionReader(0);
+        for (int i = 0; i < Data.strip(Data.get(Data.TOTAL_QUESTIONS_dl)); i++) {
+            System.out.println(QR.pickQuestion(i));
+        }
     }
 }

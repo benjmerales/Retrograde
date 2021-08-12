@@ -8,11 +8,15 @@ public class Sounds {
         String hover = "resources/sounds/hover.wav";
         String bgm = "resources/sounds/bgm.wav";
 
-        String win_sfc = "resources/sounds/correct.wav";
+        String power = "resources/sounds/power.wav";
+
+        String rig_sfc = "resources/sounds/right.wav";
         String wro_sfc = "resources/sounds/wrong.wav";
 
         String win_bgm = "resources/sounds/win.wav";
         String lose_bgm = "resources/sounds/lose.wav";
+
+        String after_story = "resources/sounds/after.wav";
 
         public void play(String path, boolean loop) {
             new Thread(() -> {

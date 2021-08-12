@@ -1,0 +1,6 @@
+Alpha 100
+Beta 67.34
+Charlie 55.34
+Delta 60.11
+Echo 49.99
+123 15.38

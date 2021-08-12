@@ -76,11 +76,12 @@
       </component>
       <component id="d38ae" class="javax.swing.JLabel" binding="decimalLabel">
         <constraints>
-          <grid row="0" column="0" row-span="1" col-span="7" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
+          <grid row="0" column="0" row-span="1" col-span="8" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="112" height="16"/>
           </grid>
         </constraints>
         <properties>
+          <font size="48"/>
           <text value="Label"/>
         </properties>
       </component>
